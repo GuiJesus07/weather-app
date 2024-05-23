@@ -1,47 +1,25 @@
 <template>
-  <div class="container">
-    <div clas1s="row">
-      <div class="col-md-6 offset-md-3">
-        <div class="login-container">
-          <h2 class="text-center mb-4">Login</h2>
-          <form action="#" method="post">
-            <div class="form-group">
-              <label for="username">Email</label>
-              <input
-                type="email"
-                class="form-control"
-                id="email"
-                name="email"
-                v-model="email"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input
-                type="password"
-                class="form-control"
-                id="password"
-                name="password"
-                v-model="password"
-                required
-              />
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">
-              <RouterLink to="/">Login</RouterLink>
-            </button>
-          </form>
-          <p class="mt-3 text-center">
-            Don't have an account?<RouterLink to="/register">Register</RouterLink>
-          </p>
-        </div>
+  <div>
+    <form @submit.prevent="login">
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" v-model="email" required />
       </div>
-    </div>
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" v-model="password" required />
+      </div>
+      <div v-if="error" class="error">
+        {{ error }}
+      </div>
+      <button type="submit">Login</button>
+    </form>
   </div>
 </template>
 
 <script>
 import { auth } from '../firebaseConfig'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 
 export default {
   data() {
@@ -54,7 +32,7 @@ export default {
   methods: {
     async login() {
       try {
-        await auth.signInWithEmailAndPassword(this.email, this.password)
+        await signInWithEmailAndPassword(auth, this.email, this.password)
         this.$router.push('/')
       } catch (error) {
         this.error = error.message
@@ -63,3 +41,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.error {
+  color: red;
+}
+</style>
